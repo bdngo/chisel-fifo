@@ -14,27 +14,28 @@ class FIFO(val width: Int = 8, val depth: Int = 32) extends Module {
     val empty = Output(Bool())
   })
 
-  val buffer = Wire(Vec(depth, UInt(width.W)))
+  val buffer = Reg(Vec(depth, UInt(width.W)))
   val ptrWidth = log2Ceil(depth)
 
   val rdPtr = RegInit(0.U(ptrWidth.W))
   val wrPtr = RegInit(0.U(ptrWidth.W))
 
-  var rdWrap = RegInit(false.B)
-  var wrWrap = RegInit(false.B)
+  val rdWrap = RegInit(false.B)
+  val wrWrap = RegInit(false.B)
 
   io.full := (rdPtr === wrPtr) && (rdWrap =/= wrWrap)
   io.empty := (rdPtr === wrPtr) && (rdWrap === wrWrap)
 
+  io.dOut := 0.U
   when (io.wrEn && !io.full) {
     when (wrPtr === (width - 1).U) {
-      wrWrap = ~wrWrap
+      wrWrap := ~wrWrap
     }
     wrPtr := wrPtr + 1.U
     buffer(wrPtr) := io.dIn
   }.elsewhen (io.rdEn && !io.empty) {
     when (rdPtr === (width - 1).U) {
-      rdWrap = ~rdWrap
+      rdWrap := ~rdWrap
     }
     rdPtr := rdPtr + 1.U
     io.dOut := buffer(rdPtr)

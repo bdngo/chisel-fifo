@@ -1,18 +1,22 @@
-package fifo
+package interpreter
 
 import chisel3._
+import chisel3.util._
 import chiseltest._
 import org.scalatest.freespec.AnyFreeSpec
 import scala.collection.mutable.ListBuffer
-
-class FIFOSpec extends AnyFreeSpec with ChiselScalatestTester {
+class InterpreterSpec extends AnyFreeSpec with ChiselScalatestTester {
   "FIFO should enqueue data" in {
-    val program: Command[Boolean] = for {
-        _ <- Poke(dut.enq.valid, 1.B)
-        _ <- Step(1)
-        p <- Peek(dut.deq.valid)
-    } yield p.litValue == 1
+
     test(new Queue(UInt(32.W), 16)) { dut =>
-        val allGood = run(program, dut.clock)
-        assert(allGood)
+      val program: Command[Boolean] = for {
+        _ <- Poke(dut.io.enq.valid, 1.B)
+        _ <- Step(1)
+        p <- Peek(dut.io.deq.valid)
+      } yield p.litValue == 1
+
+      val allGood = run(program, dut.clock)
+      assert(allGood)
     }
+  }
+}

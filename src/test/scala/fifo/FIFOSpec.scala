@@ -43,7 +43,7 @@ class FIFOSpec extends AnyFreeSpec with ChiselScalatestTester {
       }
 
       dut.clock.step(5)
-      var receivedValues = new ListBuffer[UInt]()
+      val receivedValues = new ListBuffer[UInt]()
       for (i <- 0 until 31) {
         dut.io.rdEn.poke(true.B)
         receivedValues += dut.io.dOut.peek()
