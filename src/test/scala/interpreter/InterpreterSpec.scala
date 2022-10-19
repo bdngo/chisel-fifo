@@ -16,7 +16,7 @@ class InterpreterSpec extends AnyFreeSpec with ChiselScalatestTester {
         p <- Peek(dut.io.deq.valid)
       } yield p.litToBoolean
 
-      val allGood = Interpreter.runCommand(program, dut.clock).asInstanceOf[Boolean]
+      val allGood = Interpreter.runCommand(program, dut.clock)
       assert(allGood)
     }
   }
