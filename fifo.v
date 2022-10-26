@@ -59,4 +59,12 @@ module fifo #(
     assign empty = (rd_ptr == wr_ptr) && (rd_wrap == wr_wrap);
     assign full = (rd_ptr == wr_ptr) && (rd_wrap != wr_wrap);
     assign dout = dout_reg;
+
+`ifdef COCOTB_SIM
+initial begin
+  $dumpfile ("fifo.vcd");
+  $dumpvars (0, fifo);
+  #1;
+end
+`endif
 endmodule

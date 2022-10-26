@@ -8,7 +8,7 @@ import scala.collection.mutable.ListBuffer
 class FIFOSpec extends AnyFreeSpec with ChiselScalatestTester {
 
   "FIFO should enqueue data" in {
-    test(new FIFO(8, 32)) { dut =>
+    test(new FIFO(8, 32)).withAnnotations(Seq(VerilatorBackendAnnotation)) { dut =>
       val testValues = for { x <- 0 until 32} yield x + 10
       // test init state
       dut.io.empty.expect(true.B)

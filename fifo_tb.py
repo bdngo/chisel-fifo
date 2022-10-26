@@ -1,11 +1,27 @@
 import cocotb
-from cocotb.triggers import RisingEdge, ClockCycles
+from cocotb.clock import Clock
+from cocotb.triggers import RisingEdge, ClockCycles, FallingEdge
 
 @cocotb.test()
 async def test_basic(dut):
-    # dut.rst.value = 1
-    # await RisingEdge(dut.clk)
-    # dut.rst.value = 0
+    clock = Clock(dut.clk, 10, units="ns")  # Create a 10us period clock on port clk
+    cocotb.start_soon(clock.start())  # Start the clock
+
+    """
+    fork
+        begin
+            forever begin
+                clk = !clk;
+                #10;
+            end
+        end
+    join_none
+    """
+
+    dut.rst.value = 1
+    await ClockCycles(dut.clk, 1)
+    dut.rst.value = 0
+    await FallingEdge(dut.clk)
 
     assert dut.empty.value and not dut.full.value
 
