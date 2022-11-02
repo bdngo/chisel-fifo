@@ -8,7 +8,7 @@ import scala.collection.mutable.ListBuffer
 
 class InterpreterSpec extends AnyFreeSpec with ChiselScalatestTester {
 
-  "FIFO should enqueue data" in {
+  "Interprets a set of commands" in {
     test(new Queue(UInt(32.W), 16)) { dut =>
       val program: Command[Boolean] = for {
         _ <- Poke(dut.io.enq.valid, 1.B)

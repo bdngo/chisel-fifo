@@ -29,13 +29,13 @@ class FIFO(val width: Int = 8, val depth: Int = 32) extends Module {
   io.dOut := 0.U
   when (io.wrEn && !io.full) {
     when (wrPtr === (width - 1).U) {
-      wrWrap := ~wrWrap
+      wrWrap := !wrWrap
     }
     wrPtr := wrPtr + 1.U
     buffer(wrPtr) := io.dIn
   }.elsewhen (io.rdEn && !io.empty) {
     when (rdPtr === (width - 1).U) {
-      rdWrap := ~rdWrap
+      rdWrap := !rdWrap
     }
     rdPtr := rdPtr + 1.U
     io.dOut := buffer(rdPtr)
