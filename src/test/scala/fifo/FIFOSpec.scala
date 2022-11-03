@@ -66,7 +66,8 @@ class FIFOSpec extends AnyFreeSpec with ChiselScalatestTester {
 
       println(testValues)
       println(receivedValues)
-      assert(testValues == receivedValues)
+      testValues.zip(receivedValues).foreach{ case (test, recv) => assert(test.litValue == recv.litValue) }
+      //assert(testValues == receivedValues)
 
       dut.io.rdEn.poke(true.B)
       receivedValues(0) = dut.io.dOut.peek()
