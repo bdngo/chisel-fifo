@@ -9,12 +9,14 @@ class CalyxCompilerSpec extends AnyFreeSpec with ChiselScalatestTester {
 
   "Compiles a list of commands to Calyx IR" in {
     test(new Queue(UInt(32.W), 16)) { dut =>
-      val program: Command[Bool] = for {
+      val cond = true
+      val program: Command[UInt] = for {
         _ <- Poke(dut.io.enq.valid, 1.B)
         _ <- Step(1)
-        p <- Peek(dut.io.deq.valid)
-      } yield p
-      val expectedCalyx = Seq(
+        p <- Peek(dut.io.deq.valid).map(b => b.asUInt + 100.U)
+        p1 <- { when (p(0)) { program }.otherwise {Return(100.U)} }
+      } yield p1
+      val expectedCalyx = CalyxSeq(
         List[Group[Data]](
           new Group(
             Poke(dut.io.enq.valid, 1.B), dut.clock

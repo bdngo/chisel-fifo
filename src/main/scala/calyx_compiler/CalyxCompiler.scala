@@ -6,6 +6,15 @@ import chiseltest._
 
 import scala.collection.mutable.ListBuffer
 
+  object CalyxCompiler {
+    trait Synthesizable {
+      def synthesize(): CalyxProgram
+    }
+    def runHLS(c: Synthesizable): CalyxProgram = {
+      ???
+    }
+  }
+
 sealed trait Command[+R <: Data] {
   def flatMap[R2 <: Data](f: R => Command[R2]): Command[R2] = {
     this match {
@@ -30,7 +39,7 @@ case class Cont[R1 <: Data, R2 <: Data](c: Command[R1], next: R1 => Command[R2])
 class Group[R <: Data](val cmd: Command[R], val clk: Clock)
 
 sealed trait Control[+R <: Data]
-case class Seq[R <: Data](groups: List[Group[R]]) extends Control[R]
+case class CalyxSeq[R <: Data](groups: List[Group[R]]) extends Control[R]
 
 object CalyxCompiler {
 
@@ -64,7 +73,9 @@ object CalyxCompiler {
 
   def splitCommand[R <: Data](c: Command[R], acc: ListBuffer[Command[R]], clock: Clock): ListBuffer[Command[R]] = {
     c match {
-      case Cont(c1, next) =>
+      case c: Cont[R, _] =>
+        val c1 = c.c
+        val next = c.next
         val r = runCommand(c1, clock)
         val nextCmd = next(r) // will be cont or return
         nextCmd match {
