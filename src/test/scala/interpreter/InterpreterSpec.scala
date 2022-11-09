@@ -4,7 +4,6 @@ import chisel3._
 import chisel3.util._
 import chiseltest._
 import org.scalatest.freespec.AnyFreeSpec
-import scala.collection.mutable.ListBuffer
 
 class InterpreterSpec extends AnyFreeSpec with ChiselScalatestTester {
 
