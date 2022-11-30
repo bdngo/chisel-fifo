@@ -1,7 +1,5 @@
 package calyx_compiler
 
-import scala.annotation.unused
-
 class CalyxAST {
   case class CompVar(name: String) {
     def port(port: String): CompPort = CompPort(this, port)
